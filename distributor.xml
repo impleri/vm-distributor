@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install type="plugin" version="1.5" group="vmextended" method="upgrade">
+	<name>plg_vmextended_distributor</name>
+	<creationDate>2009-06-17</creationDate>
+	<author>Christopher Roussel</author>
+	<authorEmail>christopher@impleri.net</authorEmail>
+	<authorUrl>http://impleri.net</authorUrl>
+	<license>GPL 3.0</license>
+	<version>0.8.0</version>
+	<description>VMDISTI_DESCRIPTION</description>
+
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">install/install.sql</file>
+		</sql>
+	</install>
+
+	<files>
+		<filename plugin="distributor">distributor.php</filename>
+		<filename>index.html</filename>
+		<folder>controllers</folder>
+		<folder>models</folder>
+		<folder>sql</folder>
+		<folder>tables</folder>
+		<folder>views</folder>
+	</files>
+
+	<languages>
+		<language tag="en-GB">en-GB.plg_vmextended_distributor.ini</language>
+		<language tag="en-GB">en-GB.plg_vmextended_distributor.sys.ini</language>
+	</languages>
+
+	<params>
+		<param type="text" name="discontinued" label="VMDISTI_DISCONTINUED_LABEL" default = "-1" description="VMDISTI_DISCONTINUED_DESCRIPTION" />
+	</params>
+</install>
+
+<extension type="plugin" version="1.6.0" group="vmextended" method="upgrade">
+	<name>plg_vmextended_distributor</name>
+	<creationDate>2009-06-17</creationDate>
+	<author>Christopher Roussel</author>
+	<authorEmail>christopher@impleri.net</authorEmail>
+	<authorUrl>http://impleri.net</authorUrl>
+	<license>GPL 3.0</license>
+	<version>0.8.0</version>
+	<description>VMDISTI_DESCRIPTION</description>
+
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">install/install.sql</file>
+		</sql>
+	</install>
+
+	<files>
+		<filename plugin="distributor">distributor.php</filename>
+		<filename>index.html</filename>
+		<filename>readme.markdown</filename>
+		<folder>controllers</folder>
+		<folder>models</folder>
+		<folder>sql</folder>
+		<folder>tables</folder>
+		<folder>views</folder>
+	</files>
+
+	<languages>
+		<language tag="en-GB">en-GB.plg_vmextended_distributor.ini</language>
+		<language tag="en-GB">en-GB.plg_vmextended_distributor.sys.ini</language>
+	</languages>
+
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="discontinued" default="-1" type="text" class="text"
+				label="VMDISTI_DISCONTINUED_LABEL"
+				description="VMDISTI_DISCONTINUED_DESCRIPTION"
+				/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>
