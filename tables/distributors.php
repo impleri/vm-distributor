@@ -11,7 +11,7 @@ if(!class_exists('VmTable'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmta
  */
 class TableDistributors extends VmTable {
 	/**
-	 * @var int table ID key
+	 * @var int table key
 	 */
 	public $virtuemart_distributor_id;
 
@@ -21,7 +21,12 @@ class TableDistributors extends VmTable {
 	public $distributor_name;
 
 	/**
-	 * @var string distributor source host (can be anything)
+	 * @var string distributor helper to load
+	 */
+	public $distributor_helper = '';
+
+	/**
+	 * @var string distributor source host (varies by helper)
 	 */
 	public $distributor_host;
 
@@ -31,7 +36,7 @@ class TableDistributors extends VmTable {
 	public $distributor_port;
 
 	/**
-	 * @var string distributor source path (can be anything)
+	 * @var string distributor source path (varies by helper)
 	 */
 	public $distributor_path;
 
@@ -41,7 +46,7 @@ class TableDistributors extends VmTable {
 	public $distributor_object;
 
 	/**
-	 * @var string distributor local file (file to open if remote object is archived)
+	 * @var string distributor local file (optional: file to open if remote object is archived)
 	 */
 	public $distributor_local;
 
@@ -56,11 +61,6 @@ class TableDistributors extends VmTable {
 	public $distributor_pass;
 
 	/**
-	 * @var string distributor helper to load
-	 */
-	public $distributor_helper = '';
-
-	/**
 	 * @var str Format type (can be /P/roduct, /A/vailability, or /C/ategory)
 	 */
 	public $distributor_type = 'p';
@@ -70,6 +70,7 @@ class TableDistributors extends VmTable {
 	 */
 
 	public $distributor_line = 0;
+
 	/**
 	 * @var int how often (in seconds) to run
 	 */
@@ -87,12 +88,13 @@ class TableDistributors extends VmTable {
 	 *
 	 * @param $db JDatabase object
 	 */
-	function __construct(&$db) {
+	public function __construct(&$db) {
 		parent::__construct('#__virtuemart_distributors', 'virtuemart_distributor_id', $db);
 
 		$this->setPrimaryKey('virtuemart_distributor_id');
 		$this->setObligatoryKeys('distributor_name');
-		$this->setLoggable();
+		$this->setObligatoryKeys('distributor_helper');
+		$this->setObligatoryKeys('distributor_type');
 	}
 
 	/**
@@ -101,18 +103,16 @@ class TableDistributors extends VmTable {
 	 * @param int|string Distributor to load
 	 * @return boolean true on success, false otherwise
 	 */
-	function load ($dist='') {
+	public function load ($dist='') {
+		$ret = true;
+
 		if (intval($dist) === $dist) {
 			$ret = parent::load($dist);
 		} else {
 			$ret = $this->loadByName($dist);
 		}
 
-		if (!$ret) {
-			$this->setError(JText::_('VMDISTI_DISTRIBUTOR_NOT_FOUND'));
-			return false;
-		}
-		return true;
+		return $ret;
 	}
 
 	/**
@@ -121,10 +121,10 @@ class TableDistributors extends VmTable {
 	 * @param string Name of distributor to load
 	 * @return boolean true on success, false otherwise
 	 */
-	function loadByName ($name) {
-		$sql = 'SELECT *'
-			. ' FROM ' . $this->_tbl
-			. ' WHERE `distributor_name` = ' . $this->_db->Quote($name);
+	public function loadByName ($name) {
+		$sql = 'SELECT *' . '
+			FROM `' . $this->_tbl . '`
+			WHERE `distributor_name` = ' . $this->_db->Quote($name);
 		$this->_db->setQuery($sql);
 
 		$result = $this->_db->loadAssoc();
@@ -135,4 +135,5 @@ class TableDistributors extends VmTable {
 
 		return $this->bind($result);
 	}
+
 }

@@ -89,15 +89,18 @@ class plgVmDistributorFile extends JPlugin {
 		$current = $disti->distributor_line;
 		$end =  $current + $this->_limit;
 		$line = 0;
+		$total = 0;
 
 		$f = fopen($file, 'r');
 		while (($row = fgetcsv($f, 0)) !== false) {
-			if ( ($cron) || ($line >= $current && $line <= $end) ) {
+			if ( $cron || ($line >= $current && $line <= $end) ) {
 				$csv[] = $row;
 				$line++;
 			}
+			$total++;
 		}
 		fclose($f);
+		array_unshift($csv, $total);
 
 		return $csv;
 	}

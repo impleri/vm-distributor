@@ -20,37 +20,34 @@ class VirtuemartControllerDistributor extends VmController {
 		parent::__construct();
 		$this->addModelPath(JPATH_PLUGINS.DS.'vmextended'.DS.'distributor'.DS.'models');
 		$this->addViewPath(JPATH_PLUGINS.DS.'vmextended'.DS.'distributor'.DS.'views');
-		$this->registerTask('distributor', 'list');
 	}
 
 	/**
 	 * list all distributors
 	 */
-	function listAll() {}
-
-	/**
-	 * run one distribution item
-	 */
-	function runOne() {
-		$this->display();
+	function distributor() {
+		$view = $this->getView();
+		$view->setLayout('list');
+		$view->setModel($this->getModel(), true);
+		parent::display();
 	}
 
 	/**
-	 * run all distribution items
+	 * run one or more distribution items
 	 */
 	function run() {
-		$this->display();
-	}
+		jimport('joomla.utilities.arrayhelper');
+		$ids = JRequest::getVar('cid',array(),'', 'ARRAY');
+		JArrayHelper::toInteger($ids);
 
-	/**
-	 * run all distribution items (raw)
-	 */
-	function cron() {
-		$model = $this->getModel('distributor');
-		if (!$model->cron()) {
-			$this->setError(implode('<br />', $model->getErrors()));
-		}
-		return $model->result;
+		$document = JFactory::getDocument();
+		$viewType = $document->getType();
+		$view = $this->getView('distributor', $viewType);
+
+		$view->setModel($this->getModel(), true);
+		$view->assign('cids', $ids);
+		$view->setLayout('run');
+		parent::display();
 	}
 
 	/**
@@ -61,8 +58,8 @@ class VirtuemartControllerDistributor extends VmController {
 
 		$view = $this->getView();
 		$model = $this->getModel();
-		$cids = JRequest::getInt('virtuemart_distributor_id',0);
-		$newId = $model->duplicate($cids[0]);
+		$cid = JRequest::getInt('cid',0);
+		$newId = $model->duplicate($cid);
 		if ($newId) {
 			$redirect = 'task=edit&cid='.$newId;
 			$msg = JText::_('VMDISTI_CLONE_SUCCESSFUL');
@@ -73,6 +70,6 @@ class VirtuemartControllerDistributor extends VmController {
 			$msg = JText::_('VMDISTI_CLONE_FAILED');
 			$msgtype = 'error';
 		}
-		$mainframe->redirect('index.php?option=com_virtuemart&view=distributor&'.$redirect, $msg, $msgtype);
+		$this->setRedirect('index.php?option=com_virtuemart&view=distributor&'.$redirect, $msg, $msgtype);
 	}
 }
